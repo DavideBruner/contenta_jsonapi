@@ -27,9 +27,7 @@ jobs:
         - mkdir $PROJECT_BASE_PATH
         # Load .env and .local.env
         - source ./scripts/ci/travis/load_env.sh
-      install:
-        - composer run-script install-contenta $PROJECT_BASE_PATH --timeout=0
-        - composer run-script ci:helper setup_anonymous_user "$PROJECT_BASE_PATH" --timeout=0
+      install: composer run-script install-contenta $PROJECT_BASE_PATH --timeout=0
       before_script:
         # Start Contenta CMS Local Server
         - composer run-script start-contenta $PROJECT_BASE_PATH --timeout=0 &

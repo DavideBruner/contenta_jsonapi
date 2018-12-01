@@ -3,29 +3,6 @@
 COMPOSER_BIN_DIR="$(composer config bin-dir)"
 DOCROOT="web"
 
-# Setup Anonymous User Function
-# Gives access to anonymous user to access protected resources.
-# This function receives one argument:
-#   $1 -> The Drupal Base Path
-setup_anonymous_user() {
-     if [ -z $1 ] ; then
-        echo "Please pass the Contenta Project Base Path to the install_test_dependencies function " 1>&2
-        exit 1
-    fi
-
-    # Setup local variables
-    current_path=`pwd`
-    DRUSH=$1/$COMPOSER_BIN_DIR/drush
-    DRUPAL_BASE=$1/$DOCROOT
-
-    cd $DRUPAL_BASE
-    # Add Permission to anonymous user
-    $DRUSH updatedb -y
-    $DRUSH cr -y
-
-    cd $current_path
-}
-
 # Run Functional Tests Function
 # Run Contenta CMS Functional Tests
 # This function receives one argument:
