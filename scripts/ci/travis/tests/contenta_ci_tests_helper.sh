@@ -51,7 +51,7 @@ run_functional_tests() {
 
     cd $CONTENTA_PATH
 
-    SIMPLETEST_BASE_URL=$SIMPLETEST_BASE_URL $PHPUNIT --testsuite ContentaFunctional --config="$CONTENTA_PATH/phpunit.xml"
+    SIMPLETEST_BASE_URL=$SIMPLETEST_BASE_URL $PHPUNIT --testsuite ContentaFunctional --configuration "$CONTENTA_PATH/phpunit.xml"
     exit $?
 }
 
