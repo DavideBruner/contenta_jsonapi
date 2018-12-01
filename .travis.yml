@@ -15,7 +15,7 @@ env:
 stages:
   - name: test
     # require the event type to not be a semantic release tag.
-    if: branch =~ ^8\.x\-[0-9]+\.x$
+    if: NOT tag =~ ^v\d+\.\d+\.\d+$
   - name: release
     # release upon promotion to stage only.
     if: branch = $PROJECT_RELEASE_BRANCH AND fork = false AND type IN (push, api)
