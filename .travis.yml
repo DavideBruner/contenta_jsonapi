@@ -12,6 +12,7 @@ env:
     - SIMPLETEST_DB=sqlite://tmp/site.sqlite
 
 stages:
+  - name: test
   - name: release
     # release upon promotion to stage only.
     if: branch = $PROJECT_RELEASE_BRANCH AND fork = false AND type IN (push, api)
