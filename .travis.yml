@@ -11,12 +11,10 @@ env:
     - SIMPLETEST_BASE_URL=http://127.0.0.1:8888
     - SIMPLETEST_DB=sqlite://tmp/site.sqlite
 
-stages:
-  - name: test
-  - name: release
-    # release upon promotion to stage only.
-    if: branch = $PROJECT_RELEASE_BRANCH AND fork = false AND type IN (push, api)
-# This stanza creates Travis Stages that are sequentially dependent.
+branches:
+  only:
+    - /^8\.x\-[0-9]+\.x$/
+
 jobs:
   include:
     -
@@ -61,3 +59,7 @@ jobs:
         file: "$TRAVIS_TAG.zip"
         skip_cleanup: true
         name: "Release: ${RELEASE_DATE} build ${TRAVIS_BUILD_NUMBER}"
+        on:
+          # Only release if it $PROJECT_RELEASE_BRANCH gets updated
+          branch: $PROJECT_RELEASE_BRANCH
+          repo: "contentacms/contenta_jsonapi"
