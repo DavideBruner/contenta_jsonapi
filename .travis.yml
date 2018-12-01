@@ -10,13 +10,6 @@ env:
     - SIMPLETEST_BASE_URL=http://127.0.0.1:8888
     - SIMPLETEST_DB=sqlite://tmp/site.sqlite
 
-stages:
-  - name: test
-    # require the event type to not be a semantic release tag.
-    if: NOT tag =~ ^v\d+\.\d+\.\d+$
-  - name: release
-    # release upon promotion to stage only.
-    if: branch = $PROJECT_RELEASE_BRANCH AND fork = false AND type IN (push, api)
 # This stanza creates Travis Stages that are sequentially dependent.
 jobs:
   include:
