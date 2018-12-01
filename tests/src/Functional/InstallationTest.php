@@ -3,7 +3,8 @@
 namespace Drupal\Tests\contenta_jsonapi\Functional;
 
 use Drupal\Component\Serialization\Json;
-use PHPUnit\Framework\TestCase;
+use Drupal\Core\Url;
+use Drupal\Tests\BrowserTestBase;
 use GuzzleHttp\Client;
 
 /**
@@ -11,7 +12,9 @@ use GuzzleHttp\Client;
  *
  * @group ContentaInstaller
  */
-class InstallationTest extends TestCase {
+class InstallationTest extends BrowserTestBase {
+
+  public $profile = 'contenta_jsonapi';
 
   /**
    * @var Client
@@ -19,29 +22,25 @@ class InstallationTest extends TestCase {
   private $httpClient;
 
   /**
-   * @var string
-   */
-  private $baseUrl;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp() {
-    $url = getenv('WEB_HOST');
-    $port = getenv('WEB_PORT');
-    $this->baseUrl = "http://$url:$port";
+    parent::setUp();
 
     // Set up a HTTP client that accepts relative URLs.
     $this->httpClient = new Client(['http_errors' => FALSE]);
   }
 
   public function testLandingPage() {
-    $response = $this->httpClient->request('GET', $this->baseUrl . '/');
-    $this->assertEquals(200, $response->getStatusCode());
+    $this->getSession()->visit(Url::fromRoute('<front>')->toString());
+    $this->assertEquals(200, $this->getSession()->getStatusCode());
   }
 
   public function testKnownResources() {
-    $response = $this->httpClient->request('GET', $this->baseUrl . '/api');
+    $response = $this->httpClient->request(
+      'GET',
+      Url::fromRoute('jsonapi.resource_list')->toString()
+    );
     $body = $response->getBody()->getContents();
     $output = Json::decode($body);
     $resources = array_keys($output['links']);
@@ -69,9 +68,10 @@ class InstallationTest extends TestCase {
   }
 
   public function testRpcMethod() {
+    $url = Url::fromRoute('jsonrpc.handler')->toString();
     $response = $this->httpClient->request(
       'GET',
-      $this->baseUrl . '/jsonrpc',
+      $url,
       [
         'query' => [
           'query' => '{"jsonrpc":"2.0","method":"jsonapi.metadata","id":"cms-meta"}'
@@ -83,7 +83,7 @@ class InstallationTest extends TestCase {
     $this->assertEquals('/api', $output['result']['openApi']['basePath']);
     $response = $this->httpClient->request(
       'POST',
-      $this->baseUrl . '/jsonrpc',
+      $url,
       ['body' => '{"jsonrpc":"2.0","method":"jsonapi.metadata","id":"cms-meta"}']
     );
     $body = $response->getBody()->getContents();
@@ -95,7 +95,7 @@ class InstallationTest extends TestCase {
   public function testJsonApiEntryPoint() {
     $response = $this->httpClient->request(
       'GET',
-      $this->baseUrl . '/api',
+      Url::fromRoute('jsonapi.resource_list')->toString(),
       [
         'query' => [
           'query' => '{"jsonrpc":"2.0","method":"jsonapi.metadata","id":"cms-meta"}'
@@ -110,10 +110,11 @@ class InstallationTest extends TestCase {
   }
 
   public function testOpenApi() {
-    $this->getSession()->visit('/admin/api');
-    $this->assertNotEmpty(
-      $this->getSession()->getPage()->find('css', 'a[href="#tag/Content-Recipe"]')
-    );
+    $url = Url::fromRoute('contenta_enhancements.api')->toString();
+    $this->getSession()->visit($url);
+    $page = $this->getSession()->getPage();
+    debug($page->getText());
+    $this->assertNotEmpty($page->find('css', 'a[href="#tag/Content-Recipe"]'));
   }
 
 }

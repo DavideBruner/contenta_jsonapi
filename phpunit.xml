@@ -8,8 +8,7 @@
 >
     <php>
         <ini name="memory_limit" value="-1" />
-        <env name="WEB_HOST" value="127.0.0.1" />
-        <env name="WEB_HOST" value="8888" />
+        <env name="SIMPLETEST_BASE_URL" value="http://127.0.0.1:8888" />
 
     </php>
     <testsuites>

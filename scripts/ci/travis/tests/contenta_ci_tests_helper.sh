@@ -36,8 +36,12 @@ run_functional_tests() {
         exit 1
     fi
 
-    if [[ -z $WEB_HOST ]] || [[ -z $WEB_PORT ]] ; then
-        echo "Please ensure that WEB_HOST and WEB_PORT environment variables are set." 1>&2
+    if [[ -z $SIMPLETEST_BASE_URL ]] ; then
+        echo "Please ensure that SIMPLETEST_BASE_URL environment variable is set. Ex: http://localhost" 1>&2
+        exit 1
+    fi
+    if [[ -z $SIMPLETEST_DB ]] ; then
+        echo "Please ensure that SIMPLETEST_DB environment variable is set. Ex: mysql://username:password@localhost/databasename#table_prefix" 1>&2
         exit 1
     fi
 
@@ -47,7 +51,7 @@ run_functional_tests() {
 
     cd $CONTENTA_PATH
 
-    WEB_HOST=$WEB_HOST WEB_PORT=$WEB_PORT $PHPUNIT --testsuite ContentaFunctional
+    SIMPLETEST_BASE_URL=$SIMPLETEST_BASE_URL $PHPUNIT --testsuite ContentaFunctional --config="$CONTENTA_PATH/phpunit.xml"
     exit $?
 }
 
