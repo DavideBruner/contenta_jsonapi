@@ -32,14 +32,14 @@ class InstallationTest extends BrowserTestBase {
   }
 
   public function testLandingPage() {
-    $this->getSession()->visit(Url::fromRoute('<front>')->toString());
+    $this->getSession()->visit(Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString());
     $this->assertEquals(200, $this->getSession()->getStatusCode());
   }
 
   public function testKnownResources() {
     $response = $this->httpClient->request(
       'GET',
-      Url::fromRoute('jsonapi.resource_list')->toString()
+      Url::fromRoute('jsonapi.resource_list', [], ['absolute' => TRUE])->toString()
     );
     $body = $response->getBody()->getContents();
     $output = Json::decode($body);
@@ -68,7 +68,7 @@ class InstallationTest extends BrowserTestBase {
   }
 
   public function testRpcMethod() {
-    $url = Url::fromRoute('jsonrpc.handler')->toString();
+    $url = Url::fromRoute('jsonrpc.handler', [], ['absolute' => TRUE])->toString();
     $response = $this->httpClient->request(
       'GET',
       $url,
@@ -95,7 +95,7 @@ class InstallationTest extends BrowserTestBase {
   public function testJsonApiEntryPoint() {
     $response = $this->httpClient->request(
       'GET',
-      Url::fromRoute('jsonapi.resource_list')->toString(),
+      Url::fromRoute('jsonapi.resource_list', [], ['absolute' => TRUE])->toString(),
       [
         'query' => [
           'query' => '{"jsonrpc":"2.0","method":"jsonapi.metadata","id":"cms-meta"}'
@@ -110,7 +110,7 @@ class InstallationTest extends BrowserTestBase {
   }
 
   public function testOpenApi() {
-    $url = Url::fromRoute('contenta_enhancements.api')->toString();
+    $url = Url::fromRoute('contenta_enhancements.api', [], ['absolute' => TRUE])->toString();
     $this->getSession()->visit($url);
     $page = $this->getSession()->getPage();
     debug($page->getText());
