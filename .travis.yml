@@ -1,9 +1,7 @@
 language: php
-
 cache:
   directories:
     - "$HOME/.composer/cache/files"
-
 env:
   global:
     - PROJECT_NAME=contentacms
@@ -19,11 +17,11 @@ stages:
   - name: release
     # release upon promotion to stage only.
     if: branch = $PROJECT_RELEASE_BRANCH AND fork = false AND type IN (push, api)
-
 # This stanza creates Travis Stages that are sequentially dependent.
 jobs:
   include:
-    - stage: test
+    -
+      stage: test
       before_install:
         # Fixes Composer exhausting the memory when using PHP 5.6.
         - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -36,27 +34,26 @@ jobs:
         - composer run-script install-contenta $PROJECT_BASE_PATH --timeout=0
         - composer run-script ci:helper setup_anonymous_user "$PROJECT_BASE_PATH" --timeout=0
       before_script:
-        # Start Contenta Local Server
+        # Start Contenta CMS Local Server
         - composer run-script start-contenta $PROJECT_BASE_PATH --timeout=0 &
         - until curl -s $SIMPLETEST_BASE_URL; do sleep 1; done > /dev/null
       script: composer run-script ci:helper run_functional_tests "$PROJECT_BASE_PATH" --timeout=0
       after_script: killall php
 
-    - stage: release
-      install: skip
+    -
+      stage: release
+      install: composer run-script install-contenta $PROJECT_BASE_PATH --timeout=0
       before_script: skip
       script: skip
       before_deploy:
-        # Install Contenta
-        - composer run-script install-contenta $PROJECT_BASE_PATH --timeout=0
         # Set Deployment Variable
         - RELEASE_DATE=$( date +%Y-%m-%d)
-        - TRAVIS_TAG="v3.0.${TRAVIS_BUILD_NUMBER}"
-        # Clean the Contenta Profile Folder
+        # Clean the Contenta CMS Profile Folder
         - composer run-script ci:before-deploy contentacms_profile_cleanup "$PROJECT_BASE_PATH/web" --timeout=0
         # Remove Site files
         - composer run-script ci:before-deploy rm_site "$PROJECT_BASE_PATH/web" --timeout=0
         # Zip Folder
+        - TRAVIS_TAG="v3.0.${TRAVIS_BUILD_NUMBER}"
         - composer run-script ci:before-deploy zip_folder "$HOME" "$PROJECT_NAME" "$TRAVIS_TAG" --timeout=0
       deploy:
         provider: releases
