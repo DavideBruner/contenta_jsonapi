@@ -52,10 +52,8 @@ if [ $? -ne 0 ]; then
 fi
 
 cd ${DEST_DIR}
-
 $COMPOSER config repositories.contenta_jsonapi path ${BASE_DIR}
-
-$COMPOSER require "contentacms/contenta_jsonapi:*" "phpunit/phpunit:^6" --no-progress
+$COMPOSER require "contentacms/contenta_jsonapi:dev-8.x-3.x" "phpunit/phpunit:^6" --no-progress
 
 cd $DOCROOT
 echo "-----------------------------------------------"
@@ -65,8 +63,8 @@ echo -e "${FG_C}${BG_C} EXECUTING ${NO_C} $DRUSH site-install --verbose --yes --
 # There is a problem installing from CLI. Drush can't locate some required services. Reinstalling a
 # second time usually does the trick.
 # TODO: We need to fix this.
-$DRUSH site-install --verbose --yes --db-url=sqlite://tmp/site.sqlite --site-mail=admin@localhost --account-mail=admin@localhost --site-name='Contenta CMS Demo' --account-name=admin --account-pass=admin;
-$DRUSH site-install --verbose --yes --db-url=sqlite://tmp/site.sqlite --site-mail=admin@localhost --account-mail=admin@localhost --site-name='Contenta CMS Demo' --account-name=admin --account-pass=admin;
+$DRUSH site-install --verbose --yes --db-url=$SIMPLETEST_DB --site-mail=admin@localhost --account-mail=admin@localhost --site-name='Contenta CMS Demo' --account-name=admin --account-pass=admin;
+$DRUSH site-install --verbose --yes --db-url=$SIMPLETEST_DB --site-mail=admin@localhost --account-mail=admin@localhost --site-name='Contenta CMS Demo' --account-name=admin --account-pass=admin;
 
 if [ $? -ne 0 ]; then
   echo -e "${FG_C}${EBG_C} ERROR ${NO_C} The Drupal installer failed to install Contenta CMS."
