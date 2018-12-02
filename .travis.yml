@@ -28,9 +28,7 @@ jobs:
       install: composer run-script install-contenta $PROJECT_BASE_PATH --timeout=0
       before_script:
         # Start Contenta CMS Local Server
-        - echo "EXECUTING - composer run-script start-contenta $PROJECT_BASE_PATH --timeout=0 &"
         - composer run-script start-contenta $PROJECT_BASE_PATH --timeout=0 &
-        - echo "EXECUTING - until curl -sS $SIMPLETEST_BASE_URL; do sleep 1; done > /dev/null"
         - until curl -sS $SIMPLETEST_BASE_URL; do sleep 1; done > /dev/null
         - echo "Connected to the test server at ${SIMPLETEST_BASE_URL}"
       script: composer run-script ci:helper run_functional_tests "$PROJECT_BASE_PATH" --timeout=0
