@@ -31,7 +31,8 @@ jobs:
       before_script:
         # Start Contenta CMS Local Server
         - composer run-script start-contenta $PROJECT_BASE_PATH --timeout=0 &
-        - until curl -sS $SIMPLETEST_BASE_URL; do echo "Re-try"; sleep 1; done > /dev/null
+        - until curl -sS $SIMPLETEST_BASE_URL; do sleep 1; done > /dev/null
+        - echo "Connected to the test server at $SIMPLETEST_BASE_URL"
       script: composer run-script ci:helper run_functional_tests "$PROJECT_BASE_PATH" --timeout=0
       after_script: killall php
 
