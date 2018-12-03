@@ -5,7 +5,9 @@
  or your current system user. See core/tests/README.md and
  https://www.drupal.org/node/2116263 for details.
 -->
-<phpunit bootstrap="/Users/e0ipso/Sites/cms.contentacms.local/web/core/tests/bootstrap.php" colors="true"
+<phpunit bootstrap="../../../core/tests/bootstrap.php"
+         colors="true"
+         verbose="true"
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutChangesToGlobalState="true">
